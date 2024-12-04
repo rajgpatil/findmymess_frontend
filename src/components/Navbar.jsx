@@ -8,7 +8,7 @@ const Navbar = () => {
     //display menu in sm screen sizes
     const [visible, setVisible] = useState(false);
     // show the search pop-up option
-    const {showSearch,setShowSearch,getCartCount} = useContext(ShopContext)
+    const {setShowSearch,getCartCount,navigate,token,setToken,setCartItems} = useContext(ShopContext)
     //for show the search icon only on collection page
     const [searchIcon,setSearchIcon] = useState(false)
     const location = useLocation()
@@ -20,8 +20,16 @@ const Navbar = () => {
             setSearchIcon(false)
         }
     },[location])
+
+    const logout = () =>{
+        navigate('/login')
+        localStorage.removeItem('token')
+        setToken('')
+        setCartItems({})
+        
+    }
     return(
-        <div className='sm:sticky top-0 bg-white border-b-2 flex items-center justify-between py-5 font-medium z-10'>
+        <div className='flex items-center justify-between py-5 font-medium'>
             {/* assets is the js file in the assets folder in that we import all the images and store in object assets  */}
             {/* logo */}
             <Link to = '/'>
@@ -36,7 +44,7 @@ const Navbar = () => {
                     <hr className='w-2/4 border border-orange-500 h-[1.5px] bg-gray-700 hidden'/>
                 </NavLink>
                 <NavLink to='/collection' className='flex flex-col items-center gap-1'>
-                    <p>ALL DISHES</p>
+                    <p>COLLECTION</p>
                     <hr className='w-2/4 border border-orange-500 h-[1.5px] bg-gray-700 hidden'></hr>
                 </NavLink>
                 <NavLink to='/about' className='flex flex-col items-center gap1'>
@@ -56,14 +64,15 @@ const Navbar = () => {
                     }
                     <div className='group relative'>
                         {/* profil */}
-                        <Link to = '/login'><img className='w-5 cursor-pointer' src={assets.profile_icon}></img></Link>
-                        <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
+                        <img onClick={()=> token ? null : navigate('/login')} className='w-5 cursor-pointer' src={assets.profile_icon}></img>
+                        {/* DropDown Menu */}
+                        {token && <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
                             <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded'>
                                 <p className='cursor-pointer hover:text-black'>My Profile</p>
-                                <p className='cursor-pointer hover:text-black'>Orders</p>
-                                <p className='cursor-pointer hover:text-black'>Logout</p>
+                                <p onClick={()=> navigate('/orders')} className='cursor-pointer hover:text-black'>Orders</p>
+                                <p onClick={logout} className='cursor-pointer hover:text-black'>Logout</p>
                             </div>
-                        </div>
+                        </div>}
                     </div>
                     {/* cards */}
                     <Link to='/cart' className='relative'>

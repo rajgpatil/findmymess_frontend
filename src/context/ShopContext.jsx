@@ -1,8 +1,11 @@
 import { createContext, useEffect, useState } from "react"
-import { products } from "../assets/assets";
+// import { products } from "../assets/assets";
 import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom'
 export const ShopContext = createContext();
+
+import axios from 'axios'
+
 
 const ShopContextProvider = (props) => {
     const currency = "₹";
@@ -14,6 +17,12 @@ const ShopContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({})
     // for the procced to checkout option in cart items
     const navigate = useNavigate();
+    //backend url
+    const backendUrl = import.meta.env.VITE_BACKEND_URL
+
+    const [products, setProducts] = useState([])
+    const [token,setToken] = useState('')
+
 
     // for add to cart the product for add to cart button on product page
     const addToCart = async (itemId, size) => {
@@ -97,6 +106,24 @@ const ShopContextProvider = (props) => {
             cartData[itemId][size] = 1
         }
         setCartItems(cartData)
+
+        if(token){
+            try{
+                const response = await axios.post(backendUrl + '/api/cart/add',{itemId,size},{headers:{token}})
+                if(response.data.success){
+                    toast.success(response.data.message)
+                }
+                else{
+                    toast.error(response.data.message)
+                    localStorage.removeItem('token')
+                }
+            }
+            catch(err){
+                console.log(err)
+                toast.error(err.message)
+
+            }
+        }
     }
 
     //     When you call addToCart, it modifies the cartItems state by calling setCartItems(cartData).
@@ -114,7 +141,8 @@ const ShopContextProvider = (props) => {
                     }
                 }
                 catch (error) {
-
+                    console.log(err)
+                    toast.error(err.message)
                 }
             }
         }
@@ -131,7 +159,37 @@ const ShopContextProvider = (props) => {
         // update the quantity
         cartData[itemId][size] = quantity
         setCartItems(cartData)
+        if(token){
+            try{
+                await axios.post(backendUrl + '/api/cart/update',{itemId,size,quantity},{headers:{token}})
+            }
+            catch(err){
+                console.log(err)
+                toast.error(err.message)
+            }
+        }
     }
+
+      // get the all user cards
+      const getUserCart = async (token)=>{
+        try{
+            const response = await axios.post(backendUrl + '/api/cart/get',{},{headers:{token}})
+            if(response.data.success){
+                setCartItems(response.data.cartData)
+                toast.success(response.data.message)
+            }
+            else{
+                toast.error(response.data.message)
+                setToken('')
+                localStorage.removeItem('token')
+            }
+        }
+        catch(err){
+            console.log(err)
+            toast.error(err.message)
+        }
+    }
+
     // for get the total price of all the cart products
     const getCartAmount = () => {
         let totalAmount = 0
@@ -160,11 +218,40 @@ const ShopContextProvider = (props) => {
         return totalAmount
     }
 
+    const getProductsData = async()=>{
+        try{
+            const response = await axios.get(backendUrl + '/api/product/list')
+            // console.log(response)
+            if(response.data.success){
+                setProducts(response.data.products)
+            }
+            else{
+                toast.error(response.data.message)
+            }
+        }
+        catch(err){
+            console.log(err)
+            toast.error(err.message)
+        }
+    }
+
+    useEffect(()=>{
+        getProductsData()
+        getCartCount()
+    },[])
+
+    useEffect(()=>{
+        if(!token && localStorage.getItem('token')){
+            setToken(localStorage.getItem('token'))
+            getUserCart(localStorage.getItem('token'))
+        }
+    },[]) 
+
     const value = {
         products, currency, delivery_fee,
         search, setSearch, showSearch, setShowSearch,
-        cartItems, addToCart, getCartCount, updateQuantity,
-        getCartAmount, navigate
+        cartItems, setCartItems, addToCart, getCartCount, updateQuantity,
+        getCartAmount, navigate, backendUrl, token, setToken
     }
 
     return (

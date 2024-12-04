@@ -52,11 +52,11 @@ const Collection = () => {
         let fpCopy = filterProducts.slice()
         switch(sortType){
             case 'low-high':
-                setFilterProducts(fpCopy.sort((a,b)=>(a.price-b.price)))
+                setFilterProducts(fpCopy.sort((a,b)=>(a.fullprice-b.fullprice)))
                 break
 
             case 'high-low':
-                setFilterProducts(fpCopy.sort((a,b)=>(b.price - a.price)))
+                setFilterProducts(fpCopy.sort((a,b)=>(b.fullprice - a.fullprice)))
                 break
 
             default:
@@ -68,11 +68,11 @@ const Collection = () => {
     //for if the category and subcategory states are updated then this useeffect was run
     useEffect(()=>{
         applyFilter();
-    },[category,subCategory,search,showSearch])
+    },[category,subCategory,search,showSearch,products])
 
     useEffect(()=>{
         sortProduct()
-    },[sortType])
+    },[sortType,products])
 
     return(
         <div className='flex flex-col sm:flex-row gap1 sm:gap-10 pt-10 border-t'>
@@ -113,7 +113,7 @@ const Collection = () => {
                 <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6'>
                     {
                         filterProducts.map((item,index)=>(
-                            <ProductItem key={index} id={item._id} image={item.image} name={item.name} price={item.price}/>
+                            <ProductItem key={index} id={item._id} image={item.image} name={item.name} fullprice={item.fullprice} halfprice={item.halfprice}/>
                         ))
                     }
                 </div>
