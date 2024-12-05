@@ -21,6 +21,9 @@ const Product = () => {
             }
         })
     }
+
+
+    
     useEffect(()=>{
         fetchProductData();
     },[productId,products])
@@ -30,7 +33,7 @@ const Product = () => {
             <div className='flex gap-12 sm:gap-12 flex-col sm:flex-row'>
                 {/* ----------product images----------- */}
                 <div className='flex-1 flex flex-col-reverse gap-3 sm:flex-row'>
-                    <div className='flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full'>
+                    <div className='flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-start gap-2 sm:gap-0 sm:justify-normal sm:w-[18.7%] w-full'>
                         {/* we hide the scrollbar using ::-webkit-scrollbar property in a index.css file */}
                         {
                             productData.image.map((item,index)=>(
