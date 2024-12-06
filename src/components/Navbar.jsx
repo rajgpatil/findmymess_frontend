@@ -28,6 +28,10 @@ const Navbar = () => {
         setCartItems({})
         
     }
+    // go to admin portal
+    const admin = ()=>{
+        window.location.href = 'http://localhost:5174/';
+    }
     return(
         <div className='flex items-center justify-between py-5 font-medium'>
             {/* assets is the js file in the assets folder in that we import all the images and store in object assets  */}
@@ -70,6 +74,7 @@ const Navbar = () => {
                             <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded'>
                                 <p className='cursor-pointer hover:text-black'>My Profile</p>
                                 <p onClick={()=> navigate('/orders')} className='cursor-pointer hover:text-black'>Orders</p>
+                                <p onClick={admin} className='cursor-pointer hover:text-black'>Admin</p>
                                 <p onClick={logout} className='cursor-pointer hover:text-black'>Logout</p>
                             </div>
                         </div>}
