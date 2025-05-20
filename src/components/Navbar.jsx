@@ -8,7 +8,7 @@ const Navbar = () => {
     //display menu in sm screen sizes
     const [visible, setVisible] = useState(false);
     // show the search pop-up option
-    const {setShowSearch,getCartCount,navigate,token,setToken,setCartItems} = useContext(ShopContext)
+    const {showSearch,setShowSearch,getCartCount,navigate,token,setToken,setCartItems} = useContext(ShopContext)
     //for show the search icon only on collection page
     const [searchIcon,setSearchIcon] = useState(false)
     const location = useLocation()
@@ -57,6 +57,10 @@ const Navbar = () => {
                 </NavLink>
                 <NavLink to='/contact' className='flex flex-col items-center gap1'>
                     <p>CONTACT</p>
+                    <hr className='w-2/4 border border-orange-500 h-[1.5px] bg-gray-700 hidden'></hr>
+                </NavLink>
+                <NavLink to='/recommendation' className='flex flex-col items-center gap1'>
+                    <p>RECOMMENDED</p>
                     <hr className='w-2/4 border border-orange-500 h-[1.5px] bg-gray-700 hidden'></hr>
                 </NavLink>
             </ul>
